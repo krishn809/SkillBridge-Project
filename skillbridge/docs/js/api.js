@@ -82,6 +82,7 @@ var api = {
   // events
   listEvents: function () { return request('GET', '/events'); },
   createEvent: function (payload) { return request('POST', '/events', payload); },
+  deleteEvent: function (id) { return request('DELETE', '/events/' + id); },
   rsvpEvent: function (id) { return request('POST', '/events/' + id + '/rsvp'); },
 
   // admin

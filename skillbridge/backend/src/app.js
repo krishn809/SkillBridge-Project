@@ -27,7 +27,8 @@ app.use('/api/mentorships', mentorshipsRoutes);
 app.use('/api/events', eventsRoutes);
 app.use('/api/analytics', analyticsRoutes);
 
-app.get('/api/health', (req, res) => res.json({ ok: true }));
+const { getDatabaseStats } = require('./db');
+app.get('/api/health', (req, res) => res.json({ ok: true, database: getDatabaseStats() }));
 
 // The deployed frontend lives in docs/. Keep the path relative to this file
 // so it works both locally and in Vercel's bundled function.

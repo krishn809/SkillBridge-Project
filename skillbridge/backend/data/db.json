@@ -1,0 +1,388 @@
+{
+  "users": [
+    {
+      "id": "u_student_1",
+      "role": "student",
+      "name": "Aditi Sharma",
+      "email": "aditi@student.edu",
+      "headline": "B.Tech CSE, 3rd Year — National Institute of Technology",
+      "bio": "Full-stack leaning frontend developer, curious about ML. Looking for an internship where I can build real products.",
+      "institution": "National Institute of Technology",
+      "isMentor": false,
+      "skills": [
+        {
+          "name": "JavaScript",
+          "level": "Advanced"
+        },
+        {
+          "name": "React",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Communication",
+          "level": "Advanced"
+        },
+        {
+          "name": "Problem Solving",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Data Analysis",
+          "level": "Expert"
+        },
+        {
+          "name": "Teamwork",
+          "level": "Advanced"
+        },
+        {
+          "name": "Leadership",
+          "level": "Advanced"
+        },
+        {
+          "name": "Adaptability",
+          "level": "Advanced"
+        }
+      ],
+      "projects": [
+        {
+          "id": "p_1",
+          "title": "Campus Event Manager",
+          "description": "A web app for students to discover and RSVP to campus events, with an admin panel for organizers.",
+          "tech": [
+            "React",
+            "Node.js",
+            "MongoDB"
+          ],
+          "status": "Completed",
+          "link": ""
+        }
+      ],
+      "certifications": [
+        "NPTEL: Data Structures & Algorithms"
+      ],
+      "achievements": [
+        "Runner-up, Inter-college Hackathon 2025"
+      ],
+      "assessments": [
+        {
+          "date": 1792230622562,
+          "scores": {
+            "programming": 3,
+            "data": 5,
+            "communication": 4,
+            "teamwork": 4,
+            "leadership": 4,
+            "problemsolving": 3,
+            "adaptability": 4,
+            "domain": 4
+          }
+        }
+      ],
+      "passwordHash": "$2a$10$Bqw0yyFFpIgQFyYPuO14U.r2HBy4U57ExL7/uc8W9dnOZvlsi3yMi"
+    },
+    {
+      "id": "u_academician_1",
+      "role": "academician",
+      "name": "Dr. Rohan Mehta",
+      "email": "rohan@university.edu",
+      "headline": "Associate Professor, Computer Science",
+      "bio": "Researching applied ML and mentoring students on industry-facing projects.",
+      "institution": "National Institute of Technology",
+      "department": "Computer Science",
+      "isMentor": true,
+      "skills": [
+        {
+          "name": "Machine Learning",
+          "level": "Expert"
+        },
+        {
+          "name": "Mentoring",
+          "level": "Expert"
+        },
+        {
+          "name": "Data Analysis",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [],
+      "achievements": [],
+      "passwordHash": "$2a$10$drIKG9jwYL7rMHAQz6WgmOe5N3CgiGTGwW7HiY0yOuFF8dQvTL.fS"
+    },
+    {
+      "id": "u_industry_1",
+      "role": "industry",
+      "name": "Priya Nair",
+      "email": "priya@technova.com",
+      "headline": "Head of Talent & University Relations",
+      "bio": "Building the bridge between campus talent and real engineering work at TechNova.",
+      "orgName": "TechNova Solutions",
+      "sector": "Software & IT Services",
+      "isMentor": true,
+      "skills": [
+        {
+          "name": "Leadership",
+          "level": "Advanced"
+        },
+        {
+          "name": "Project Management",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [],
+      "achievements": [],
+      "passwordHash": "$2a$10$Zq9tARzTbsHI2ru0DjwtjuYR1j3X8.isWokp7gC0CZHLbCSKDBDDy"
+    },
+    {
+      "id": "u_admin_1",
+      "role": "admin",
+      "name": "Admin Officer",
+      "email": "admin@nit.edu",
+      "headline": "Placement & Training Cell",
+      "bio": "Overseeing skill development and placement outcomes across the institution.",
+      "institution": "National Institute of Technology",
+      "isMentor": false,
+      "skills": [],
+      "certifications": [],
+      "achievements": [],
+      "passwordHash": "$2a$10$98cNT/0Q6KQ7H3nMYVww1.Ejci/reaue97Rmj017vCQ9Z3EBXfSvG"
+    },
+    {
+      "id": "u_admin_system",
+      "role": "admin",
+      "name": "John D.",
+      "email": "admin@system.co",
+      "headline": "System Administrator",
+      "bio": "Institutional & platform administration.",
+      "institution": "SkillBridge Global",
+      "isMentor": false,
+      "skills": [],
+      "certifications": [],
+      "achievements": [],
+      "passwordHash": "$2a$10$0kiwGy7LY.SVF.dnPu2.ku6OI735W.BnwrjFdA.GdbkW3nT0L43oG"
+    },
+    {
+      "id": "u_sarah_jones",
+      "role": "industry",
+      "name": "Sarah Jones",
+      "email": "sarah.jones@email.com",
+      "headline": "Senior Tech Talent Partner",
+      "bio": "Partnering with universities to recruit emerging talent.",
+      "orgName": "Global Tech Partners",
+      "sector": "Technology",
+      "isMentor": true,
+      "skills": [
+        {
+          "name": "Leadership",
+          "level": "Expert"
+        },
+        {
+          "name": "Mentoring",
+          "level": "Expert"
+        }
+      ],
+      "certifications": [],
+      "achievements": [],
+      "passwordHash": "$2a$10$6IXHpmRMKmDOw3CMtFrF3esGUoBgsEDdkLuZlXwD5RWCrxjhHPWQG"
+    },
+    {
+      "id": "u_student_id",
+      "role": "student",
+      "name": "Alex Rivera (S2023101)",
+      "email": "s2023101@student.edu",
+      "headline": "Student ID: S2023101 — Computer Science",
+      "bio": "Undergraduate student passionate about web technologies and software development.",
+      "institution": "SkillBridge University",
+      "isMentor": false,
+      "skills": [
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Python",
+          "level": "Intermediate"
+        }
+      ],
+      "projects": [],
+      "certifications": [],
+      "achievements": [],
+      "assessments": [],
+      "passwordHash": "$2a$10$Xa6.N/KgXH6r.WotRIy9xONiP8MwjK7OIRk/uLLnDQ1egcxPm72/2"
+    }
+  ],
+  "opportunities": [
+    {
+      "id": "o_1",
+      "industryId": "u_industry_1",
+      "industryName": "TechNova Solutions",
+      "title": "Frontend Developer Intern",
+      "type": "Internship",
+      "description": "Work with our product team building customer-facing dashboards in React. 3-month remote-friendly internship with mentorship.",
+      "requiredSkills": [
+        "JavaScript",
+        "React",
+        "Communication"
+      ],
+      "deadline": "2026-11-15",
+      "createdAt": 1758800000000
+    },
+    {
+      "id": "o_2",
+      "industryId": "u_industry_1",
+      "industryName": "TechNova Solutions",
+      "title": "Data Analyst Trainee",
+      "type": "Training",
+      "description": "Six-week paid training program covering real business data, dashboards, and analytics storytelling, with a placement track for top performers.",
+      "requiredSkills": [
+        "Data Analysis",
+        "Excel",
+        "Communication"
+      ],
+      "deadline": "2026-12-01",
+      "createdAt": 1759050000000
+    },
+    {
+      "id": "o_3zjualkg",
+      "industryId": "u_industry_1",
+      "industryName": "TechNova Solutions",
+      "title": "Social media manager",
+      "type": "Training",
+      "description": "2+ years experience",
+      "requiredSkills": [
+        "editing",
+        "Graphic designer"
+      ],
+      "deadline": "2026-10-30",
+      "createdAt": 1792078688018
+    }
+  ],
+  "applications": [
+    {
+      "id": "a_1",
+      "opportunityId": "o_1",
+      "userId": "u_student_1",
+      "status": "Shortlisted",
+      "date": 1759100000000
+    }
+  ],
+  "programs": [
+    {
+      "id": "pr_1",
+      "academicianId": "u_academician_1",
+      "academicianName": "Dr. Rohan Mehta",
+      "title": "AI Applications Faculty Development Program",
+      "type": "FDP",
+      "description": "A one-week faculty development program on applying machine learning to real industry problems, run jointly with TechNova.",
+      "eligibility": "Open to faculty and PhD scholars",
+      "startDate": "2027-01-12",
+      "endDate": "2027-01-18",
+      "interested": []
+    }
+  ],
+  "mentorships": [
+    {
+      "id": "m_dv4klbni",
+      "mentorId": "u_industry_1",
+      "mentorName": "Priya Nair",
+      "menteeId": "u_student_1",
+      "menteeName": "Aditi Sharma",
+      "status": "accepted",
+      "feedback": "",
+      "createdAt": 1792078747325
+    },
+    {
+      "id": "m_fdiafqrn",
+      "mentorId": "u_academician_1",
+      "mentorName": "Dr. Rohan Mehta",
+      "menteeId": "u_student_1",
+      "menteeName": "Aditi Sharma",
+      "status": "accepted",
+      "feedback": "Excellent research progress in neural networks.",
+      "createdAt": 1792082529379
+    }
+  ],
+  "events": [
+    {
+      "id": "e_1",
+      "title": "Industry 4.0 Workshop",
+      "type": "Workshop",
+      "date": "2026-10-14",
+      "description": "Hands-on workshop on automation and IoT in modern manufacturing, hosted by TechNova engineers.",
+      "organizerName": "TechNova Solutions",
+      "rsvps": []
+    },
+    {
+      "id": "e_2",
+      "title": "AI in Research: Guest Lecture",
+      "type": "GuestLecture",
+      "date": "2026-10-22",
+      "description": "A guest lecture on applying ML to academic research pipelines.",
+      "organizerId": "u_academician_1",
+      "organizerName": "Dr. Rohan Mehta",
+      "time": "11:00 AM – 12:30 PM",
+      "location": "Seminar Hall A",
+      "rsvps": [
+        "u_student_1",
+        "u_admin_1"
+      ]
+    },
+    {
+      "id": "e_3",
+      "organizerId": "u_academician_1",
+      "organizerName": "Dr. Rohan Mehta",
+      "title": "AI & Robotics Practical Workshop",
+      "type": "Workshop",
+      "date": "2026-11-20",
+      "time": "02:00 PM – 04:00 PM",
+      "location": "Robotics Lab 101",
+      "description": "Hands-on practical session on autonomous robotics and computer vision models.",
+      "rsvps": [
+        "u_student_1"
+      ],
+      "createdAt": 1792085115732
+    },
+    {
+      "id": "e_70rwlay9",
+      "organizerId": "u_academician_1",
+      "organizerName": "Dr. Rohan Mehta",
+      "title": "Deep Learning workshop",
+      "type": "Workshop",
+      "date": "2026-10-30",
+      "time": "1:00pm IST",
+      "location": "Arya Bhatta Auditorium",
+      "description": "Session by industrial mentor J.K. Whatson",
+      "rsvps": [],
+      "createdAt": 1792085403640
+    },
+    {
+      "id": "e_4r06fmak",
+      "organizerId": "u_admin_1",
+      "organizerName": "Admin Officer",
+      "title": "Tutorial on neural network",
+      "type": "GuestLecture",
+      "date": "2026-11-01",
+      "time": "1:00 IST",
+      "location": "Ramanujan Seminar Hall A2",
+      "description": "Guest lecture by MANIT faculty",
+      "rsvps": [
+        "u_student_1"
+      ],
+      "createdAt": 1792086055948
+    },
+    {
+      "id": "e_8hpz6b4l",
+      "organizerId": "u_academician_1",
+      "organizerName": "Dr. Rohan Mehta",
+      "title": "ai in research",
+      "type": "Workshop",
+      "date": "2026-10-30",
+      "time": "1:00 PM - 5 PM",
+      "location": "Ramanujan Seminar Hall A2",
+      "description": "Artificial intelligence in AI research and development",
+      "rsvps": [
+        "u_student_1"
+      ],
+      "createdAt": 1792230537331
+    }
+  ]
+}
