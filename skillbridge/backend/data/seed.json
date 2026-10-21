@@ -252,6 +252,7 @@
       "type": "GuestLecture",
       "date": "2026-10-22",
       "description": "A guest lecture on applying ML to academic research pipelines.",
+      "organizerId": "u_academician_1",
       "organizerName": "Dr. Rohan Mehta",
       "rsvps": []
     }

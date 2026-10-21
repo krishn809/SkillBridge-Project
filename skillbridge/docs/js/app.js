@@ -1273,6 +1273,32 @@ async function studentDashboard(user) {
   }).join('') : '<p class="empty-message">Add a few skills to get personalized opportunity recommendations.</p>';
 
   var shortlistedCount = apps.filter(function (a) { return a.status === 'Shortlisted' || a.status === 'Selected'; }).length;
+  var events = (await api.listEvents()).events || [];
+  var todayStr = new Date().toISOString().slice(0, 10);
+  var studentSessions = events.map(function (ev) {
+    var rsvped = (ev.rsvps || []).indexOf(user.id) > -1;
+    var status = 'UPCOMING';
+    var statusClass = 'status-upcoming';
+    if (ev.date && ev.date < todayStr) {
+      status = 'COMPLETED';
+      statusClass = 'status-completed';
+    } else if (ev.date && ev.date === todayStr) {
+      status = 'IN PROGRESS';
+      statusClass = 'status-inprogress';
+    }
+    return {
+      title: ev.title,
+      status: rsvped ? (status + ' (RSVP)') : status,
+      statusClass: statusClass,
+      meta: (ev.type || 'Event') + ' · ' + (ev.location || 'Campus') + ' · Hosted by ' + (ev.organizerName || 'Partner'),
+      time: (ev.time ? ev.time + ' · ' : '') + fmtDate(ev.date)
+    };
+  });
+  if (!studentSessions.length) {
+    studentSessions = [
+      { title: 'Campus Collaborative Workshop', status: 'UPCOMING', statusClass: 'status-upcoming', meta: 'Innovation Lab · Campus Hall', time: 'Schedule in Events' }
+    ];
+  }
 
   return '' +
     renderSkillBridgeModernDashboard(user, {
@@ -1288,13 +1314,14 @@ async function studentDashboard(user) {
       c3Val: String(apps.length) + ' Active',
       c3Sub: shortlistedCount + ' shortlisted',
       c4Title: 'MENTORSHIP SESSIONS',
-      c4Val: '14 Hours',
-      c4Sub: '3 sessions completed',
+      c4Val: String(events.length) + ' Events',
+      c4Sub: 'Available on campus',
       chartTitle: 'My Skill Growth vs Market Demand Benchmark',
       donutCenter: '88.4%',
       donutCenterSub: 'Mastery',
       legendLine1: 'Market Demand',
-      legendLine2: 'My Skill Velocity'
+      legendLine2: 'My Skill Velocity',
+      sessions: studentSessions
     }) +
     '<div class="dashboard-section">' +
     '<div class="section-heading"><div><h2>Recommended for you</h2><p>Based on the skills in your profile.</p></div><button class="small-btn" onclick="setView(\'opportunities\')">View all</button></div>' +
@@ -1621,40 +1648,67 @@ async function submitMentorFeedback(e, id) {
 async function renderEventsView(user) {
   var canCreate = user.role === 'academician' || user.role === 'industry' || user.role === 'admin';
   var createForm = canCreate ? (
-    '<div class="dashboard-section"><div class="section-heading"><div><h2>Create an event</h2></div></div>' +
-    '<form onsubmit="return createEvent(event)">' +
+    '<div class="dashboard-section"><div class="section-heading"><div><h2>Create an Event or Collaborative Session</h2><p>Organize academic workshops, guest lectures, and industry sessions.</p></div></div>' +
+    '<form onsubmit="return handleCreateEvent(event)">' +
     '<div class="profile-form">' +
-    '<div class="form-group"><label>Title</label><input type="text" name="title" required></div>' +
-    '<div class="form-group"><label>Type</label><select name="type"><option>Workshop</option><option>GuestLecture</option><option>Challenge</option></select></div>' +
+    '<div class="form-group"><label>Title / Topic</label><input type="text" name="title" placeholder="e.g. AI Applications Workshop" required></div>' +
+    '<div class="form-group"><label>Session Type</label><select name="type"><option>Workshop</option><option>GuestLecture</option><option>Challenge</option></select></div>' +
     '<div class="form-group"><label>Date</label><input type="date" name="date" required></div>' +
-    '<div class="form-group full-width"><label>Description</label><textarea name="description"></textarea></div>' +
+    '<div class="form-group"><label>Time Window</label><input type="text" name="time" placeholder="e.g. 10:00 AM – 11:30 AM"></div>' +
+    '<div class="form-group"><label>Venue / Location</label><input type="text" name="location" placeholder="e.g. Virtual Lab Room 204"></div>' +
+    '<div class="form-group full-width"><label>Description</label><textarea name="description" placeholder="Session goals, agenda, and target audience..."></textarea></div>' +
     '</div>' +
-    '<div class="profile-actions"><button type="submit" class="primary-btn save-profile">Create Event</button></div>' +
+    '<div class="profile-actions"><button type="submit" class="primary-btn save-profile">Save & Schedule Event</button></div>' +
     '</form></div>'
   ) : '';
 
-  var events = (await api.listEvents()).events;
+  var events = (await api.listEvents()).events || [];
   var iconMap = { Workshop: '🛠️', GuestLecture: '🎤', Challenge: '🏆' };
   var list = events.length ? events.map(function (ev) {
     var rsvped = (ev.rsvps || []).indexOf(user.id) > -1;
+    var isOrganizer = (ev.organizerId && ev.organizerId === user.id) || ev.organizerName === user.name || user.role === 'admin';
+    var timeLoc = [ev.time, ev.location].filter(Boolean).join(' · ');
     return '<div class="education-card">' +
       '<div class="education-icon">' + (iconMap[ev.type] || '📅') + '</div>' +
-      '<div style="flex:1;min-width:200px;"><h3>' + escapeHtml(ev.title) + '</h3><p>' + escapeHtml(ev.description || '') + '</p><span class="meta">' + fmtDate(ev.date) + ' · Hosted by ' + escapeHtml(ev.organizerName) + ' · ' + (ev.rsvps || []).length + ' interested</span></div>' +
+      '<div style="flex:1;min-width:200px;">' +
+      '<h3>' + escapeHtml(ev.title) + '</h3>' +
+      '<p>' + escapeHtml(ev.description || '') + '</p>' +
+      '<span class="meta">' + fmtDate(ev.date) + (timeLoc ? ' · ' + escapeHtml(timeLoc) : '') + ' · Hosted by ' + escapeHtml(ev.organizerName) + ' · ' + (ev.rsvps || []).length + ' interested</span>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px;">' +
       '<button class="small-btn ' + (rsvped ? '' : 'go') + '" onclick="rsvpEvent(\'' + ev.id + '\')">' + (rsvped ? 'Cancel RSVP' : 'I\'m Interested') + '</button>' +
+      (isOrganizer ? '<button class="small-btn" style="background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5;" onclick="removeEvent(\'' + ev.id + '\')" title="Delete event">Delete</button>' : '') +
+      '</div>' +
       '</div>';
-  }).join('') : '<p class="empty-message">No events scheduled yet.</p>';
+  }).join('') : '<p class="empty-message">No events or sessions scheduled yet.</p>';
 
-  return createForm + '<div class="dashboard-section"><div class="section-heading"><div><h2>Upcoming events</h2></div></div>' + list + '</div>';
+  return createForm + '<div class="dashboard-section"><div class="section-heading"><div><h2>Upcoming Events & Sessions</h2></div></div>' + list + '</div>';
 }
-async function createEvent(e) {
+async function handleCreateEvent(e) {
   e.preventDefault();
   var f = new FormData(e.target);
   await guarded(async function () {
-    await api.createEvent({ title: f.get('title'), type: f.get('type'), date: f.get('date'), description: f.get('description') });
-    showToast('Event created.');
+    await api.createEvent({
+      title: f.get('title'),
+      type: f.get('type'),
+      date: f.get('date'),
+      time: f.get('time'),
+      location: f.get('location'),
+      description: f.get('description')
+    });
+    showToast('Event saved to database.');
     await render();
   });
   return false;
+}
+window.handleCreateEvent = handleCreateEvent;
+async function removeEvent(id) {
+  if (!confirm('Are you sure you want to delete this event/session?')) return;
+  await guarded(async function () {
+    await api.deleteEvent(id);
+    showToast('Event removed from database.');
+    await render();
+  });
 }
 async function rsvpEvent(id) {
   await guarded(async function () {
@@ -1739,44 +1793,107 @@ function copyPortfolio() {
 ========================================================= */
 async function academicianDashboard(user) {
   var programs = (await api.listPrograms()).programs.filter(function (p) { return p.academicianId === user.id; });
-  var mentorships = (await api.mentorshipInbox()).mentorships;
+  var mentorships = (await api.mentorshipInbox()).mentorships || [];
   var pending = mentorships.filter(function (m) { return m.status === 'pending'; }).length;
   var accepted = mentorships.filter(function (m) { return m.status === 'accepted'; }).length;
-  var events = (await api.listEvents()).events.filter(function (e) { return e.organizerName === user.name; });
+  var allEvents = (await api.listEvents()).events || [];
+  var myEvents = allEvents.filter(function (e) {
+    return (e.organizerId && e.organizerId === user.id) || e.organizerName === user.name || (e.rsvps || []).indexOf(user.id) > -1;
+  });
+
+  // Dynamically build database-connected sessions from events, mentorships, and programs
+  var todayStr = new Date().toISOString().slice(0, 10);
+  var dbSessions = [];
+
+  allEvents.forEach(function (ev) {
+    var isMine = (ev.organizerId && ev.organizerId === user.id) || ev.organizerName === user.name;
+    var status = 'UPCOMING';
+    var statusClass = 'status-upcoming';
+    if (ev.date && ev.date < todayStr) {
+      status = 'COMPLETED';
+      statusClass = 'status-completed';
+    } else if (ev.date && ev.date === todayStr) {
+      status = 'IN PROGRESS';
+      statusClass = 'status-inprogress';
+    }
+    var meta = [
+      ev.type || 'Session',
+      isMine ? 'Host (You)' : (ev.organizerName || 'Partner'),
+      ev.location || 'Virtual Lab'
+    ].filter(Boolean).join(' · ');
+
+    dbSessions.push({
+      title: ev.title,
+      status: status,
+      statusClass: statusClass,
+      meta: meta,
+      time: (ev.time ? ev.time + ' · ' : '') + fmtDate(ev.date)
+    });
+  });
+
+  mentorships.filter(function (m) { return m.status === 'accepted'; }).forEach(function (m) {
+    dbSessions.push({
+      title: 'Mentorship Session: ' + (m.menteeName || 'Student Mentee'),
+      status: 'UPCOMING',
+      statusClass: 'status-upcoming',
+      meta: '1-on-1 Academic Mentoring · Mentorship Track',
+      time: 'Weekly Sync'
+    });
+  });
+
+  programs.forEach(function (p) {
+    dbSessions.push({
+      title: p.title + ' (' + p.type + ')',
+      status: 'IN PROGRESS',
+      statusClass: 'status-inprogress',
+      meta: 'Program Lead · ' + (p.eligibility || 'Faculty/Industry Track'),
+      time: (p.startDate && p.endDate) ? (fmtDate(p.startDate) + ' – ' + fmtDate(p.endDate)) : 'Ongoing'
+    });
+  });
+
+  if (!dbSessions.length) {
+    dbSessions = [
+      { title: 'No active sessions scheduled', status: 'READY', statusClass: 'status-upcoming', meta: 'Create a workshop or collaborative session in Events & Sessions', time: 'Schedule anytime' }
+    ];
+  }
+
+  var notifs = [];
+  if (pending > 0) {
+    notifs.push({ title: 'Mentorship Request Pending', time: 'Active', body: pending + ' student(s) requested your mentorship.' });
+  }
+  myEvents.forEach(function (ev) {
+    notifs.push({ title: 'Scheduled Event: ' + ev.title, time: fmtDate(ev.date), body: (ev.rsvps || []).length + ' students/attendees have RSVP\'d.' });
+  });
+  if (programs.length > 0) {
+    notifs.push({ title: 'Active Program: ' + programs[0].title, time: 'Live', body: (programs[0].interested || []).length + ' participants marked interest.' });
+  }
+  if (!notifs.length) {
+    notifs.push({ title: 'System Synced', time: 'Just now', body: 'All student cohorts and sessions are connected to the central database.' });
+  }
 
   return '' +
     renderSkillBridgeModernDashboard(user, {
-      alert1Text: 'Cohort Mentorship Review: 3 student collaboration applications awaiting your review.',
-      alert2Text: 'Research Milestone: 86% of your mentee cohort have submitted their milestones on time.',
+      alert1Text: pending > 0 ? ('Cohort Mentorship Review: ' + pending + ' student collaboration applications awaiting review.') : 'Cohort Mentorship: All pending student reviews are up to date.',
+      alert2Text: 'Research & Teaching Activity: ' + (myEvents.length + programs.length) + ' collaborative programs & events scheduled in the database.',
       c1Title: 'ACTIVE MENTEES',
-      c1Val: String(accepted || 42) + ' Students',
+      c1Val: String(accepted) + ' Students',
       c1Sub: pending + ' pending review',
       c2Title: 'COLLABORATIVE PROGRAMS',
-      c2Val: String(programs.length || 8) + ' Active',
-      c2Sub: '3 corporate FDPs',
-      c3Title: 'PROJECT REVIEWS',
-      c3Val: '19 Completed',
-      c3Sub: '4 due this week',
-      c4Title: 'MENTORING SESSIONS',
-      c4Val: '36 Hours',
-      c4Sub: '4.9/5 cohort rating',
+      c2Val: String(programs.length) + ' Active',
+      c2Sub: programs.length + ' programs running',
+      c3Title: 'SCHEDULED EVENTS',
+      c3Val: String(myEvents.length) + ' Events',
+      c3Sub: allEvents.length + ' campus sessions total',
+      c4Title: 'DATABASE SESSIONS',
+      c4Val: String(dbSessions.length) + ' Total',
+      c4Sub: 'Live synced from DB',
       chartTitle: 'Cohort Skill Velocity vs Curriculum Target',
       donutCenter: '92.5%',
       donutCenterSub: 'Mastery',
       legendLine1: 'Curriculum Benchmark',
       legendLine2: 'Cohort Velocity',
-      sessions: [
-        { title: 'Advanced Cloud Architectures FDP', status: 'COMPLETED', statusClass: 'status-completed', meta: 'Industry Track · TechNova Mentors · Virtual Lab', time: '09:00 AM – 10:00 AM' },
-        { title: 'Mentee Code Review: React & Python', status: 'IN PROGRESS', statusClass: 'status-inprogress', meta: 'Student Cohort A · Sunita Rao · Room 204', time: '10:15 AM – 11:15 AM' },
-        { title: 'Industry Collaboration Planning', status: 'UPCOMING', statusClass: 'status-upcoming', meta: 'Corporate R&D · Dr. Rajesh Iyer · Wing 1', time: '02:00 PM – 03:00 PM' },
-        { title: 'Student Project Milestone Demo', status: 'UPCOMING', statusClass: 'status-upcoming', meta: 'Capstone Batch 2026 · Auditorium Hall', time: '04:00 PM – 05:00 PM' }
-      ],
-      notifs: [
-        { title: 'Mentorship Request Received', time: '5m ago', body: 'Aditi Verma requested mentorship guidance for Full-Stack Internships.' },
-        { title: 'Milestone Submitted', time: '22m ago', body: 'Student Aarav Sharma submitted Project Milestone 2 for your review.' },
-        { title: 'New Program Endorsed', time: '1h ago', body: 'TechNova endorsed the Collaborative Machine Learning Apprenticeship.' },
-        { title: 'Campus Seminar Scheduled', time: '3h ago', body: 'Guest lecture on Generative AI confirmed for Friday.' }
-      ]
+      sessions: dbSessions,
+      notifs: notifs
     }) +
     renderPerformanceTelemetry({
       id: 'acad_dash',
@@ -1812,7 +1929,7 @@ async function academicianDashboard(user) {
     statCard('🎓', programs.length, 'Programs run') +
     statCard('🤝', accepted, 'Active mentees') +
     statCard('⏳', pending, 'Pending requests') +
-    statCard('📅', events.length, 'Events organized') +
+    statCard('📅', myEvents.length, 'Events organized') +
     '</div>';
 }
 
