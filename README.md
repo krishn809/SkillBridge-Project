@@ -9,6 +9,11 @@ This is a working reference implementation, not a finished production
 system — see [Honest limitations](#honest-limitations-and-next-steps) before
 you rely on it for anything real.
 
+<div align="center">
+
+![Banner](Banner.jpg)
+</div>
+
 ## What's here
 
 ```
