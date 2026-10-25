@@ -11,7 +11,7 @@ you rely on it for anything real.
 
 <div align="center">
 
-![Banner](Banner.jpg)
+![Banner](Banner.jpeg)
 </div>
 
 ## What's here
